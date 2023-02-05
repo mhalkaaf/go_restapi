@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: dep-goapi
+  name: dep-goapi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dep-goapi
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: dep-goapi
+    spec:
+      containers:
+      - image: mhalkaaf/goapi
+        name: goapi
+        resources: {}
+status: {}
