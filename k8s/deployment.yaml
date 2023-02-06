@@ -18,7 +18,7 @@ spec:
         app: dep-goapi
     spec:
       containers:
-      - image: mhalkaaf/goapi
+      - image: mhalkaaf/goapi:<VERSION>
         name: goapi
         resources: {}
 status: {}

@@ -1,2 +1,35 @@
-#
-#
+sudo: required
+language: go
+
+services:
+  - docker
+
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
+
+
+before_install:
+  - openssl aes-256-cbc -K $encrypted_37355773015e_key -iv $encrypted_37355773015e_iv -in fiboapp-new.json.enc -out fiboapp-new.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file fiboapp-new.json
+  - gcloud config set project fiboapp-new
+  - gcloud config set compute/zone asia-southeast1-a
+  - gcloud container clusters get-credentials fiboapp-new
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t mhalkaaf/goapi .
+
+before_script:
+  - go test ./test/ -v
+
+after_script:
+  - docker build -t mhalkaaf/goapi .
+
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
